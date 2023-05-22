@@ -4,10 +4,12 @@ from create_bot import dp, bot
 from database.database import connect
 from my_bot_commands.set_bot_commands import set_admins_commands, set_admins_chat_commands, set_sisadmin_commands
 async def on_startup(_):
-    print(await set_admins_commands(bot))
-    print(await set_admins_chat_commands(bot))
-    print(await set_sisadmin_commands(bot))
-    connect()
+    if await set_admins_commands(bot) and await set_admins_chat_commands(bot) and await set_sisadmin_commands(bot):
+        try:
+            connect()
+        except Exception as err:
+            print(err)
+            exit()
 group.register(dp)
 admin.register(dp)
 chat.register(dp)
