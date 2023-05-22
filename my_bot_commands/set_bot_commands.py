@@ -20,6 +20,7 @@ async def set_admins_chat_commands(bot:Bot):
         commands=[
             BotCommand('start', "simple start the bot"),
             BotCommand('start_admin', 'start select the tru answers'),
+            BotCommand('get_users', "arg Group name for get the group users"),
         ],
         scope=BotCommandScopeChat(chat_id=patern.admin.id)
     )
