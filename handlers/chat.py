@@ -120,7 +120,13 @@ async def get_true_test(callback:types.CallbackQuery):
     try:
         await callback.message.delete()
     except:
-        print(f">>> @{callback.from_user.username} eskirgan tugmani bosdi!!!\a")
+        name:str = ''
+        if not callback.from_user.username is None:
+            name = f"@{callback.from_user.username}"
+        else:
+            name = f'<a href="tg://user?id={callback.from_user.id}">{callback.from_user.first_name}</a>'
+        print(f">>> {callback.from_user.first_name} eskirgan tugmani bosdi !!!\a")
+        await bot.send_message(chat_id=patern.admin.id, text=f">>> {name} eskirgan tugmani bosdi !!!")
 
 async def get_true_marafon(callback:types.CallbackQuery):
     await callback.answer()
@@ -157,7 +163,13 @@ async def get_true_marafon(callback:types.CallbackQuery):
     try:
         await callback.message.delete()
     except:
-        print(f">>> @{callback.from_user.username} eskirgan tugmani bosdi!!!\a")
+        name:str = ''
+        if not callback.from_user.username is None:
+            name = f"@{callback.from_user.username}"
+        else:
+            name = f'<a href="tg://user?id={callback.from_user.id}">{callback.from_user.first_name}</a>'
+        print(f">>> {callback.from_user.first_name} eskirgan tugmani bosdi !!!\a")
+        await bot.send_message(chat_id=patern.admin.id, text=f">>> {name} eskirgan tugmani bosdi !!!")
 
 def register(dp:Dispatcher):
     dp.register_message_handler(command_cancel, chat_type=types.ChatType.PRIVATE, commands=['cancel'])
