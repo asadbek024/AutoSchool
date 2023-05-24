@@ -117,7 +117,10 @@ async def get_true_test(callback:types.CallbackQuery):
             answers = ", ".join(get_true_answers(values=[callback.from_user.id]).split(':')[1:])
             await callback.message.answer(f"{topic}-paragraf:\n{score} ta to'g'ri javob")
             await bot.send_message(chat_id=get_students_group(values=[callback.from_user.id]), text=f"{topic}-paragraf:\n{name[0]} {score} ta to'g'ri javob:\n{answers}")
-    await callback.message.delete()
+    try:
+        await callback.message.delete()
+    except:
+        print(f">>> @{callback.from_user.username} eskirgan tugmani bosdi!!!\a")
 
 async def get_true_marafon(callback:types.CallbackQuery):
     await callback.answer()
@@ -151,7 +154,10 @@ async def get_true_marafon(callback:types.CallbackQuery):
                     await callback.message.answer_video(video=file[1], caption=f"{position+1}-savol:\n\t{question}", reply_markup=inline.keyboard(varlist))
             else:
                 await callback.message.answer(text=f"{position+1}-savol:\n\t{question}", reply_markup=inline.keyboard(varlist))
-    await callback.message.delete()
+    try:
+        await callback.message.delete()
+    except:
+        print(f">>> @{callback.from_user.username} eskirgan tugmani bosdi!!!\a")
 
 def register(dp:Dispatcher):
     dp.register_message_handler(command_cancel, chat_type=types.ChatType.PRIVATE, commands=['cancel'])
