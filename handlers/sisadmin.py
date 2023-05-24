@@ -1,3 +1,4 @@
+from os import system
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
@@ -79,6 +80,23 @@ async def get_variants(message:types.Message, state:FSMContext):
     await message.answer("Done!")
     await message.delete()
 
+async def poweroff_bot(message:types.Message, state:FSMContext):
+    if message.chat.id == patern.sisadmin.id:
+        await message.answer(">> bot is offline")
+        await message.delete()
+        exit(code=0)
+
+async def poweroff_pc(message:types.Message, state:FSMContext):
+    if message.chat.id == patern.sisadmin.id:
+        await message.answer(">> poweroff done")
+        await message.delete()
+        try:
+            system("poweroff")
+        except:
+            system("shutdown -s -t 0")
+        finally:
+            exit(code=0)
+
 def register(dp:Dispatcher):
     dp.register_message_handler(command_start, chat_type=types.ChatType.PRIVATE, commands=['start_sisadmin'], state=None)
     dp.register_message_handler(command_cancel, chat_type=types.ChatType.PRIVATE, commands=['cancel_add'], state='*')
@@ -87,3 +105,5 @@ def register(dp:Dispatcher):
     dp.register_message_handler(get_file, content_types=[types.ContentType.PHOTO, types.ContentType.VIDEO], state=SisAdminStatesGroup.file)
     dp.register_message_handler(get_question, content_types=types.ContentTypes.TEXT, state=SisAdminStatesGroup.question)
     dp.register_message_handler(get_variants, content_types=types.ContentTypes.TEXT, state=SisAdminStatesGroup.variants)
+    dp.register_message_handler(poweroff_bot, chat_type=types.ChatType.PRIVATE, commands=['poweroff_bot'], state=None)
+    dp.register_message_handler(poweroff_pc, chat_type=types.ChatType.PRIVATE, commands=['poweroff_pc'], state=None)
