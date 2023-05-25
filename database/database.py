@@ -136,21 +136,21 @@ def set_questions(cur:sq.Cursor, values:list) -> None:
     cur.execute("INSERT INTO questions(id, topic, file_id, question, variants) VALUES(?,?,?,?,?)", values)
 
 @sqlite_decorate
-def get_questions(cur:sq.Cursor, values:list[int]) -> list:
+def get_questions(cur:sq.Cursor, values:list) -> list:
     return cur.execute("SELECT id FROM questions WHERE topic=?", values).fetchall()
 
 @sqlite_decorate
-def get_question(cur:sq.Cursor, values:list[int]) -> tuple:
+def get_question(cur:sq.Cursor, values:list) -> tuple:
     return cur.execute("SELECT file_id, question, variants FROM questions WHERE id=?", values).fetchone()
 
 @sqlite_decorate
-def check_question(cur:sq.Cursor, values:list[int]) -> bool:
+def check_question(cur:sq.Cursor, values:list) -> bool:
     if cur.execute("SELECT topic FROM questions WHERE topic=?", values).fetchone() is None:
         return False
     return True
 
 @sqlite_decorate
-def update_questions(cur:sq.Cursor, values:list[str, int]) -> None:
+def update_questions(cur:sq.Cursor, values:list) -> None:
     cur.execute("UPDATE questions SET variants=? WHERE id=?", values)
 
 @sqlite_decorate
@@ -204,8 +204,8 @@ def get_marafon(cur:sq.Cursor, values:list) -> tuple:
     return cur.execute("SELECT file, question, answers FROM marafon WHERE id=?", values).fetchone()
 
 @sqlite_decorate
-def get_new_id_marafon(cur:sq.Cursor, values:list=None) -> int:
-    return int(cur.execute("SELECT id FROM marafon", values).fetchall()[-1][0])+1
+def get_new_id_marafon(cur:sq.Cursor, values:list) -> int:
+    return int(cur.execute("SELECT id FROM marafon").fetchall()[-1][0])+1
 
 @sqlite_decorate
 def get_topic_name(cur:sq.Cursor, values:list) -> tuple[str]:
