@@ -31,7 +31,7 @@ def get_paterns() -> Paterns:
             db='bot.db'
             ),
         admin=Admin(
-            id=438039439,
+            id=5486903240,#438039439,
             name="Dilmurod",
             user_name="mahkamovdilmurod",
         ),
