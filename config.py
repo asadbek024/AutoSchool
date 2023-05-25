@@ -27,7 +27,7 @@ def get_paterns() -> Paterns:
             id=0,
             name="AutoSchool",
             user_name="AutoSchool_uz_bot",
-            token="6297301326:AAE8kC3JLIF_ZXNA07Zcj-byBUkq2ru7TI0",
+            token="6269803770:AAH-Ch7l2hzSPvqwc-Pmeg9IPmDSjUQi8w0",
             db='bot.db'
             ),
         admin=Admin(
