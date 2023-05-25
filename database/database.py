@@ -208,7 +208,7 @@ def get_new_id_marafon(cur:sq.Cursor, values:list) -> int:
     return int(cur.execute("SELECT id FROM marafon").fetchall()[-1][0])+1
 
 @sqlite_decorate
-def get_topic_name(cur:sq.Cursor, values:list) -> tuple[str]:
+def get_topic_name(cur:sq.Cursor, values:list) -> tuple:
     return cur.execute("SELECT name FROM topic WHERE id=?", values).fetchone()
 
 @sqlite_decorate
