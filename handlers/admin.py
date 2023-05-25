@@ -21,7 +21,7 @@ async def command_start(message:types.Message):
         if len(message.text.split()) > 1:
             typeof = message.text.split()[-1]
             if typeof.isdigit():
-                topic = int(message.text.split()[-1])
+                topic = int(typeof)
                 buttons = [["☑️", f"move:{topic}:0:done"],["➡️", f"move:{topic}:0:1"]]
                 questions = get_questions(values=[topic])
                 try:
@@ -42,7 +42,7 @@ async def command_start(message:types.Message):
             elif typeof == "marafon":
                 file, question, variants = get_marafon()
         else:
-            await message.answer("start_admin buyrug'idan so'ng argument kiriting")
+            await message.answer("/start_admin buyrug'idan so'ng argument kiriting")
     await message.delete()
 
 async def command_get_users(message:types.Message):
