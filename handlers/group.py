@@ -7,9 +7,7 @@ async def command_start(message:types.Message):
     if check_groups(values=[message.chat.id]):
         if get_group_students(values=[message.chat.id]) != []:
             args:list[str] = message.text.split()
-            if len(args) == 4:
-                await message.answer("test boshlandi!", reply_markup=inline.keyboard([[["start", f"start marafon{message.chat.id}-{args[3]}-{arg}"]]]))
-            elif len(args) == 3:                    
+            if len(args) == 3:                    
                 if args[-1].isdigit():
                     arg = args[-1]
             elif len(args) == 2:

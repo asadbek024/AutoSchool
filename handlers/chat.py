@@ -58,15 +58,11 @@ async def callback_start(callback:types.CallbackQuery):
         if(len(args) < 3):
             await callback.answer("havola noto'g'ri ustozga habar bering", show_alert=True)
             return
-        if check_groups(values=[-int(args[1])]) and check_student(values=[user_id]):
+        elif check_groups(values=[-int(args[1])]) and check_student(values=[user_id]):
             typeoftest = args[0]
             group = -int(args[1])
-            arg = args[2]
+            topic = args[2]
             start = 0
-            if typeoftest == "marafon":
-                if len(args) == 4:
-                    arg = args[3]
-                    start = int(args[2])-1
         else:
             await callback.answer("Bu havola siz uchun emas", show_alert=True)
             return
@@ -75,7 +71,7 @@ async def callback_start(callback:types.CallbackQuery):
             message_id = get_message_students(values=[user_id])
             if user_state < 0 and message_id != callback.message.message_id:
                 await callback.answer("Botga o'ting test boshlandi!!", show_alert=True)
-                await bot.send_message(chat_id=user_id, text=f"Tayyormisiz\n/cancel - bekor qilish", reply_markup=inline.keyboard([[["start", f'{typeoftest}:{start}:{arg}:{group}:0:{callback.message.message_id}']]]))
+                await bot.send_message(chat_id=user_id, text=f"Tayyormisiz\n/cancel - bekor qilish", reply_markup=inline.keyboard([[["start", f'{typeoftest}:{start}:{topic}:{group}:0:{callback.message.message_id}']]]))
                 change_student_state(values=[0, user_id])
                 change_message_students(values=[callback.message.message_id, user_id])
             else:
@@ -129,29 +125,25 @@ async def get_true_test(callback:types.CallbackQuery):
         await bot.send_message(chat_id=patern.admin.id, text=f">>> {name} eskirgan tugmani bosdi !!!")
 
 async def get_true_marafon(callback:types.CallbackQuery):
-    await callback.answer()
     parametrs = callback.data.split(':')
+    await callback.answer()
     student_message_id = int(parametrs[5])
     current_students_message_id = get_message_students(values=[callback.from_user.id])
-    if student_message_id == current_students_message_id:
-        value:bool = bool(int(parametrs[4]))
+    value:bool = bool(int(parametrs[4]))
+    if current_students_message_id == student_message_id:
+        topic = int(parametrs[2])
+        position = int(parametrs[1])
+        questions = get_marafons(values=[topic])
         if value:
             answers = f"{get_true_answers(values=[callback.from_user.id])}:{position}"
             score = get_student_score(values=[callback.from_user.id])
             change_score(values=[score+1, callback.from_user.id])
             update_true_answers(values=[answers, callback.from_user.id])
-        limit = int(parametrs[2])
-        position = int(parametrs[1])
         change_student_state(values=[position, callback.from_user.id])
-        if position == limit:
-            score = get_student_score(values=[callback.from_user.id])
-            name = get_students(values=[callback.from_user.id])
-            answers = ", ".join(get_true_answers(values=[callback.from_user.id]).split(':')[1:])
-            await callback.message.answer(f"marafon:\n\t{score} ta to'g'ri javob")
-            await bot.send_message(chat_id=-int(parametrs[3]), text=f"marafon:\n{name[0]} {score} ta to'g'ri javob:\n{answers}")
-        else:
-            file, question, variants = get_marafon(values=[position])
-            varlist = get_variants(arg=limit, position=position+1, variants=variants, group=-int(parametrs[3]), typeoftest="marafon", message_id=student_message_id)
+        try:
+            question_id = [questions[position][0]]
+            file, question, variants = get_marafon(question_id)
+            varlist = get_variants(arg=topic, position=1+position, variants=variants, group=-int(parametrs[3]), typeoftest="marafon", message_id=student_message_id)
             if file is not None:
                 file = file.split(':')
                 if file[0] == "photo":
@@ -160,6 +152,12 @@ async def get_true_marafon(callback:types.CallbackQuery):
                     await callback.message.answer_video(video=file[1], caption=f"{position+1}-savol:\n\t{question}", reply_markup=inline.keyboard(varlist))
             else:
                 await callback.message.answer(text=f"{position+1}-savol:\n\t{question}", reply_markup=inline.keyboard(varlist))
+        except:
+            score = get_student_score(values=[callback.from_user.id])
+            name = get_students(values=[callback.from_user.id])
+            answers = ", ".join(get_true_answers(values=[callback.from_user.id]).split(':')[1:])
+            await callback.message.answer(f"{topic}-bilet:\n{score} ta to'g'ri javob")
+            await bot.send_message(chat_id=get_students_group(values=[callback.from_user.id]), text=f"{topic}-paragraf:\n{name[0]} {score} ta to'g'ri javob:\n{answers}")
     try:
         await callback.message.delete()
     except:

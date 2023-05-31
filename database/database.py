@@ -33,14 +33,10 @@ def connect():
             cursor.execute("""
                 CREATE TABLE IF NOT EXISTS marafon(
                     id INTEGER PRIMARY KEY,
+                    bilet INTEGER,
                     file TEXT,
                     question TEXT,
                     answers TEXT
-                )""")
-            cursor.execute("""
-                CREATE TABLE IF NOT EXISTS topic(
-                    id INTEGER PRIMARY KEY,
-                    name TEXT
                 )""")
     except sq.Error as err:
         raise Exception(err)
@@ -197,20 +193,19 @@ def get_group_message(cur:sq.Cursor, values:list) -> int:
 
 @sqlite_decorate
 def set_marafon(cur:sq.Cursor, values:list) -> None:
-    cur.execute("INSERT INTO marafon(id, file, question, answers) VALUES(?,?,?,?)", values)
+    cur.execute("INSERT INTO marafon(id, bilet, file, question, answers) VALUES(?,?,?,?,?)", values)
 
 @sqlite_decorate
 def get_marafon(cur:sq.Cursor, values:list) -> tuple:
-    return cur.execute("SELECT file, question, answers FROM marafon WHERE id=?", values).fetchone()
+    return cur.execute("SELECT file, question, answers FROM marafon WHERE bilet=?", values).fetchone()
+
+@sqlite_decorate
+def get_marafons(cur:sq.Cursor, values:list) -> list:
+    return cur.execute("SELECT id FROM marafon WHERE bilet=?", values).fetchall()
 
 @sqlite_decorate
 def get_new_id_marafon(cur:sq.Cursor, values:list) -> int:
-    return int(cur.execute("SELECT id FROM marafon").fetchall()[-1][0])+1
-
-@sqlite_decorate
-def get_topic_name(cur:sq.Cursor, values:list) -> tuple:
-    return cur.execute("SELECT name FROM topic WHERE id=?", values).fetchone()
-
-@sqlite_decorate
-def set_topic_name(cur:sq.Cursor, values:list) -> None:
-    cur.execute("INSERT INTO topic(id, name) VALUES(?, ?)", values)
+    try:
+        return int(cur.execute("SELECT id FROM marafon").fetchall()[-1][0])+1
+    except:
+        return 0

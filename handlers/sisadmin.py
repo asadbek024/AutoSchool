@@ -29,18 +29,19 @@ async def command_cancel(message:types.Message, state:FSMContext):
 async def add_handler(callback:types.CallbackQuery, state:FSMContext):
     await callback.answer()
     param = callback.data.split(":")[-1]
-    if param == "topic":
-        await SisAdminStatesGroup.topic.set()
-        await callback.message.answer("send me topic number (id)")
-    else:
-        await SisAdminStatesGroup.file.set()
-        await callback.message.answer("send me file")
+    await SisAdminStatesGroup.topic.set()
+    async with state.proxy() as data:
+        data['typeoftest'] = param
+    await callback.message.answer("send me paragraph number (id)")
     await callback.message.delete()
 
 async def get_topic(message:types.Message, state:FSMContext):
     if message.text.isdigit():
         async with state.proxy() as data:
-            data['topic'] = int(message.text)
+            if data['typeoftest'] == 'topic':
+                data['topic'] = int(message.text)
+            else:
+                data['bilet'] = int(message.text)
         await SisAdminStatesGroup.next()
         await message.answer("And send me file")
     await message.delete()
@@ -69,13 +70,12 @@ async def get_variants(message:types.Message, state:FSMContext):
     varlist = message.text.split('\n')
     variants = "\n\n\n\n".join([f"f{i+1}) {x}:0" for i, x in enumerate(varlist)])
     async with state.proxy() as data:
-        data['variants'] = variants
-        if data['topic'] is not None:
+        if data['typeoftest'] == 'topic':
             new_id = get_new_id_questions(values=[])
             set_questions(values=[new_id, data['topic'], data['file'], data['question'], variants])
         else:
             new_id = get_new_id_marafon(values=[])
-            set_marafon(values=[new_id, data['file'], data['question'], variants])
+            set_marafon(values=[new_id, data['bilet'], data['file'], data['question'], variants])
     await state.finish()
     await message.answer("Done!")
     await message.delete()
